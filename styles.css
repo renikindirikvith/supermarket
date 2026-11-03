@@ -1,0 +1,219 @@
+/* ===== Custom CSS — extra polish on top of Tailwind ===== */
+
+/* ---------- Base resets & fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  --green-primary: #16a34a;
+  --green-dark: #15803d;
+  --green-light: #dcfce7;
+  --orange-accent: #f97316;
+  --yellow-accent: #facc15;
+  --bg-cream: #fefdf8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-cream);
+  overflow-x: hidden;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f0; }
+::-webkit-scrollbar-thumb { background: #a3d9a5; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-primary); }
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+@keyframes bounce-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.1); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up { animation: fadeInUp .55s ease-out both; }
+.animate-fade-in    { animation: fadeIn .4s ease-out both; }
+.animate-slide-in   { animation: slideInRight .35s ease-out both; }
+.animate-slide-out  { animation: slideOutRight .3s ease-in both; }
+.animate-pulse-badge { animation: pulse-badge .4s ease-in-out; }
+.animate-bounce-in  { animation: bounce-in .5s ease-out both; }
+
+/* stagger children */
+.stagger > *:nth-child(1) { animation-delay: .05s; }
+.stagger > *:nth-child(2) { animation-delay: .10s; }
+.stagger > *:nth-child(3) { animation-delay: .15s; }
+.stagger > *:nth-child(4) { animation-delay: .20s; }
+.stagger > *:nth-child(5) { animation-delay: .25s; }
+.stagger > *:nth-child(6) { animation-delay: .30s; }
+.stagger > *:nth-child(7) { animation-delay: .35s; }
+.stagger > *:nth-child(8) { animation-delay: .40s; }
+
+/* ---------- Product card hover ---------- */
+.product-card {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+.product-card .add-btn {
+  transition: background-color .2s, transform .15s;
+}
+.product-card .add-btn:hover {
+  transform: scale(1.05);
+}
+.product-card .add-btn:active {
+  transform: scale(.95);
+}
+
+/* ---------- Category tile hover ---------- */
+.category-tile {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.category-tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,.10);
+}
+
+/* ---------- Hero shimmer overlay ---------- */
+.hero-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgba(255,255,255,0) 30%,
+    rgba(255,255,255,.15) 50%,
+    rgba(255,255,255,0) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 5s infinite linear;
+}
+
+/* ---------- Cart drawer ---------- */
+.cart-overlay {
+  transition: opacity .3s ease;
+}
+.cart-drawer {
+  transition: transform .35s ease;
+}
+
+/* ---------- Toast notification ---------- */
+.toast {
+  animation: fadeInUp .35s ease-out, fadeIn .3s ease-out;
+}
+.toast-exit {
+  animation: fadeIn .25s ease-in reverse forwards;
+}
+
+/* ---------- Discount badge ---------- */
+.discount-badge {
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
+}
+
+/* ---------- Rating stars ---------- */
+.star-filled { color: #facc15; }
+.star-empty  { color: #d1d5db; }
+
+/* ---------- Countdown timer ---------- */
+.countdown-box {
+  background: linear-gradient(135deg, #1e3a2f 0%, #14532d 100%);
+}
+
+/* ---------- Benefits section icon ring ---------- */
+.benefit-icon-ring {
+  transition: transform .3s ease;
+}
+.benefit-icon-ring:hover {
+  transform: rotate(8deg) scale(1.08);
+}
+
+/* ---------- Newsletter background pattern ---------- */
+.newsletter-pattern {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.06) 0%, transparent 40%);
+}
+
+/* ---------- Mobile menu ---------- */
+.mobile-menu {
+  transition: max-height .35s ease, opacity .25s ease;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.mobile-menu.open {
+  max-height: 600px;
+  opacity: 1;
+}
+
+/* ---------- Focus visible ---------- */
+*:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Search input custom ---------- */
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(22,163,74,.25);
+}
+
+/* ---------- Skeleton loader (unused but handy) ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ---------- Hide native scrollbar in category bar ---------- */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ---------- Tiny up-arrow for "back to top" ---------- */
+.back-to-top {
+  transition: opacity .3s, transform .3s;
+}
+.back-to-top.hidden {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+
+
+/* Dark theme base colors for areas that do not use Tailwind utilities. */
+html.dark body {
+  color: #e5e7eb;
+  background-color: #030712;
+}
+
+html.dark ::-webkit-scrollbar-track { background: #111827; }
+html.dark ::-webkit-scrollbar-thumb { background: #374151; }
