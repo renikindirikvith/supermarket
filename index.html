@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FreshMart — Fresh Groceries Delivered to Your Door</title>
+  <meta name="description" content="Shop fresh fruits, vegetables, dairy, bakery, meats and more at FreshMart. Fast delivery, great prices, and a seamless online grocery shopping experience."/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], display: ['Playfair Display', 'serif'] },
+          colors: { brand: { 50:'#f0fdf4', 100:'#dcfce7', 200:'#bbf7d0', 300:'#86efac', 400:'#4ade80', 500:'#22c55e', 600:'#16a34a', 700:'#15803d', 800:'#166534', 900:'#14532d' } }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body class="min-h-screen text-gray-800 dark:text-gray-200 antialiased bg-[#fefdf8] dark:bg-gray-950 transition-colors duration-300">
+
+<!-- ═══════════════════════════════════════════════
+     TOAST CONTAINER
+     ═══════════════════════════════════════════════ -->
+<div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col items-end pointer-events-none" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════ -->
+<header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-sm dark:shadow-gray-800/30 transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 flex-shrink-0" aria-label="FreshMart Home">
+        <span class="text-2xl sm:text-3xl">🛒</span>
+        <span class="text-xl sm:text-2xl font-extrabold text-green-700 dark:text-green-400 tracking-tight">Fresh<span class="text-orange-500 dark:text-orange-400">Mart</span></span>
+      </a>
+
+      <!-- Delivery location (desktop) -->
+      <button class="hidden lg:flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition" aria-label="Change delivery location">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Deliver to <strong class="text-gray-800 dark:text-gray-200">New York 10001</strong></span>
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+
+      <!-- Search (desktop) -->
+      <div class="hidden md:flex flex-1 max-w-xl">
+        <div class="relative w-full">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="search-input" type="search" placeholder="Search for groceries…" class="search-input w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:focus:bg-gray-700 transition" aria-label="Search products"/>
+        </div>
+      </div>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Theme toggle -->
+        <button onclick="toggleTheme()" id="theme-toggle" class="p-2 sm:p-2.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-yellow-400 transition-all duration-300" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+          <!-- Sun icon (shown in dark mode) -->
+          <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+        </button>
+
+        <!-- Account (desktop) -->
+        <button class="hidden sm:flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition" aria-label="My Account">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          <span class="hidden lg:inline">Account</span>
+        </button>
+
+        <!-- Cart -->
+        <button onclick="openCart()" class="relative flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-sm font-semibold transition shadow-sm" aria-label="Open shopping cart">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121 0 2.09-.773 2.34-1.872l1.758-7.735A.75.75 0 0021.333 4.5H6"/></svg>
+          <span class="hidden sm:inline">Cart</span>
+          <span class="cart-count hidden absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+        </button>
+
+        <!-- Mobile menu toggle -->
+        <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-green-600 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg id="mobile-menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile search + menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden pb-4 dark:bg-gray-900">
+      <div class="relative mb-3">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="mobile-search-input" type="search" placeholder="Search for groceries…" class="search-input w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:focus:bg-gray-700 transition" aria-label="Search products"/>
+      </div>
+      <nav class="flex flex-col gap-1" aria-label="Mobile category navigation">
+        <button onclick="filterByCategory('All');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">All Products</button>
+        <button onclick="filterByCategory('Fruits & Vegetables');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥬 Fruits & Vegetables</button>
+        <button onclick="filterByCategory('Dairy');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥛 Dairy</button>
+        <button onclick="filterByCategory('Bakery');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥐 Bakery</button>
+        <button onclick="filterByCategory('Meat & Seafood');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥩 Meat & Seafood</button>
+        <button onclick="filterByCategory('Snacks');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🍿 Snacks</button>
+        <button onclick="filterByCategory('Beverages');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🧃 Beverages</button>
+      </nav>
+      <div class="flex items-center gap-2 mt-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Deliver to <strong class="text-gray-700 dark:text-gray-200">New York 10001</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop category navigation -->
+  <nav class="hidden md:block border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900" aria-label="Product categories">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 py-2 overflow-x-auto hide-scrollbar">
+        <button onclick="filterByCategory('All')" data-cat="All" aria-pressed="true" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-green-600 dark:bg-green-700 text-white transition">All</button>
+        <button onclick="filterByCategory('Fruits & Vegetables')" data-cat="Fruits & Vegetables" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥬 Fruits & Vegetables</button>
+        <button onclick="filterByCategory('Dairy')" data-cat="Dairy" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥛 Dairy</button>
+        <button onclick="filterByCategory('Bakery')" data-cat="Bakery" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥐 Bakery</button>
+        <button onclick="filterByCategory('Meat & Seafood')" data-cat="Meat & Seafood" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥩 Meat & Seafood</button>
+        <button onclick="filterByCategory('Snacks')" data-cat="Snacks" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🍿 Snacks</button>
+        <button onclick="filterByCategory('Beverages')" data-cat="Beverages" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🧃 Beverages</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     HERO SECTION
+     ═══════════════════════════════════════════════ -->
+<section class="relative overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-emerald-800 text-white">
+  <div class="hero-shimmer absolute inset-0 z-0"></div>
+  <!-- Decorative circles -->
+  <div class="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+  <div class="absolute -bottom-16 -left-16 w-56 h-56 bg-yellow-400/10 rounded-full blur-2xl"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+    <div class="grid lg:grid-cols-2 gap-10 items-center">
+      <div class="animate-fade-in-up">
+        <span class="inline-block bg-white/20 backdrop-blur-sm text-sm font-medium px-4 py-1 rounded-full mb-5">🌿 Fresh & Organic</span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5">
+          Farm-Fresh Groceries,<br class="hidden sm:block"/> <span class="text-yellow-300">Delivered Fast</span>
+        </h1>
+        <p class="text-green-100 text-base sm:text-lg max-w-lg mb-8 leading-relaxed">
+          Shop over 5,000 products from local farms and trusted brands. Get same-day delivery right to your doorstep — fresher than ever.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#products-section" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105">
+            Shop Now
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </a>
+          <a href="#deals-section" class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur text-white font-semibold px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition">
+            Today's Deals
+          </a>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 mt-10 text-sm text-green-200">
+          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>Free delivery over $50</div>
+          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>Same-day shipping</div>
+          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>100% fresh guarantee</div>
+        </div>
+      </div>
+      <div class="hidden lg:block animate-fade-in-up" style="animation-delay:.2s">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=700&h=500&fit=crop" alt="Fresh groceries in a basket including fruits, vegetables, and bread" class="rounded-3xl shadow-2xl w-full object-cover max-h-[440px]" loading="eager"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CATEGORY TILES
+     ═══════════════════════════════════════════════ -->
+<section class="py-14 sm:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Shop by Category</h2>
+      <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">Browse our wide selection of fresh, quality products</p>
+    </div>
+    <div id="category-tiles" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger">
+      <!-- JS rendered -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FEATURED PRODUCTS
+     ═══════════════════════════════════════════════ -->
+<section id="products-section" class="pb-14 sm:pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Featured Products</h2>
+        <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">Hand-picked for quality and freshness</p>
+      </div>
+      <button onclick="clearFilters()" class="text-green-600 hover:text-green-700 text-sm font-semibold transition self-start sm:self-auto">View All →</button>
+    </div>
+    <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      <!-- JS rendered -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SPECIAL OFFERS / DEAL OF THE DAY
+     ═══════════════════════════════════════════════ -->
+<section id="deals-section" class="py-14 sm:py-20 bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 text-white relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><circle cx=%2230%22 cy=%2230%22 r=%222%22 fill=%22white%22/></svg>');"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <span class="inline-block bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 animate-pulse">🔥 LIMITED TIME</span>
+      <h2 class="text-2xl sm:text-3xl font-bold">Deal of the Day</h2>
+      <p class="text-green-200 mt-2 text-sm sm:text-base">Grab these offers before they expire!</p>
+      <div id="countdown" class="mt-6"><!-- JS rendered --></div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Deal card 1 -->
+      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 hover:bg-white/15 transition group">
+        <div class="relative rounded-xl overflow-hidden mb-4">
+          <img src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=250&fit=crop" alt="Avocados on sale" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+          <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-25% OFF</span>
+        </div>
+        <h3 class="font-bold text-lg mb-1">Organic Avocado Pack</h3>
+        <p class="text-green-200 text-sm mb-3">Premium Hass avocados, perfectly ripe</p>
+        <div class="flex items-center justify-between">
+          <div><span class="text-2xl font-bold text-yellow-300">$4.49</span><span class="text-sm text-green-300 line-through ml-2">$5.99</span></div>
+          <button onclick="addToCart(3)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
+        </div>
+      </div>
+      <!-- Deal card 2 -->
+      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 hover:bg-white/15 transition group">
+        <div class="relative rounded-xl overflow-hidden mb-4">
+          <img src="https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=250&fit=crop" alt="Farm fresh eggs" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+          <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-20% OFF</span>
+        </div>
+        <h3 class="font-bold text-lg mb-1">Farm Fresh Eggs (12)</h3>
+        <p class="text-green-200 text-sm mb-3">Free-range, cage-free farm eggs</p>
+        <div class="flex items-center justify-between">
+          <div><span class="text-2xl font-bold text-yellow-300">$3.99</span><span class="text-sm text-green-300 line-through ml-2">$4.99</span></div>
+          <button onclick="addToCart(8)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
+        </div>
+      </div>
+      <!-- Deal card 3 -->
+      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 hover:bg-white/15 transition group sm:col-span-2 lg:col-span-1">
+        <div class="relative rounded-xl overflow-hidden mb-4">
+          <img src="https://images.unsplash.com/photo-1604503468506-a8da13d82571?w=400&h=250&fit=crop" alt="Chicken breast on sale" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+          <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-20% OFF</span>
+        </div>
+        <h3 class="font-bold text-lg mb-1">Chicken Breast 500g</h3>
+        <p class="text-green-200 text-sm mb-3">Premium quality, hormone-free chicken</p>
+        <div class="flex items-center justify-between">
+          <div><span class="text-2xl font-bold text-yellow-300">$7.99</span><span class="text-sm text-green-300 line-through ml-2">$9.99</span></div>
+          <button onclick="addToCart(13)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     WHY SHOP WITH US
+     ═══════════════════════════════════════════════ -->
+<section class="py-14 sm:py-20 bg-green-50/60 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Why Shop With Us</h2>
+      <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">Here's what makes FreshMart special</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Benefit 1 -->
+      <div class="text-center group">
+        <div class="benefit-icon-ring w-16 h-16 mx-auto bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.746 3.746 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.745 3.745 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Farm Fresh Quality</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Sourced directly from local farms. We guarantee the freshest produce every single day.</p>
+      </div>
+      <!-- Benefit 2 -->
+      <div class="text-center group">
+        <div class="benefit-icon-ring w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Lightning Fast Delivery</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Get your groceries delivered in as little as 2 hours. Free shipping on orders over $50.</p>
+      </div>
+      <!-- Benefit 3 -->
+      <div class="text-center group">
+        <div class="benefit-icon-ring w-16 h-16 mx-auto bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Best Price Guarantee</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Competitive prices on every item. Find it cheaper elsewhere? We'll match the price.</p>
+      </div>
+      <!-- Benefit 4 -->
+      <div class="text-center group">
+        <div class="benefit-icon-ring w-16 h-16 mx-auto bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Easy Returns</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Not satisfied? Return any item within 24 hours for a full refund, no questions asked.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CUSTOMER REVIEWS
+     ═══════════════════════════════════════════════ -->
+<section class="py-14 sm:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">What Our Customers Say</h2>
+      <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">Join thousands of happy FreshMart shoppers</p>
+    </div>
+    <div id="testimonials-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- JS rendered -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     NEWSLETTER SIGNUP
+     ═══════════════════════════════════════════════ -->
+<section class="py-14 sm:py-20 bg-gradient-to-r from-green-600 to-emerald-700 text-white newsletter-pattern">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <span class="text-4xl mb-4 inline-block">📬</span>
+    <h2 class="text-2xl sm:text-3xl font-bold mb-3">Get Exclusive Deals</h2>
+    <p class="text-green-100 mb-8 text-sm sm:text-base max-w-md mx-auto">Subscribe to our newsletter and receive weekly offers, new product alerts, and seasonal recipes straight to your inbox.</p>
+    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+      <label for="newsletter-email" class="sr-only">Email address</label>
+      <input id="newsletter-email" type="email" placeholder="Enter your email address" required class="flex-1 px-5 py-3 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-md" />
+      <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 flex-shrink-0">
+        Subscribe
+      </button>
+    </form>
+    <p class="text-green-200 text-xs mt-4">No spam, ever. Unsubscribe at any time.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════ -->
+<footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <!-- Column 1 — Brand -->
+      <div>
+        <a href="#" class="flex items-center gap-2 mb-4" aria-label="FreshMart Home">
+          <span class="text-2xl">🛒</span>
+          <span class="text-xl font-extrabold text-white">Fresh<span class="text-orange-400">Mart</span></span>
+        </a>
+        <p class="text-sm text-gray-400 leading-relaxed mb-5">Your one-stop online grocery store. Fresh products, unbeatable prices, and delivered straight to your door.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" aria-label="Facebook">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" aria-label="Instagram">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" aria-label="Twitter/X">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" aria-label="YouTube">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Column 2 — Quick Links -->
+      <div>
+        <h4 class="text-white font-bold mb-4">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-green-400 transition">About Us</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Our Stores</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Careers</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Blog & Recipes</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Gift Cards</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 — Customer Support -->
+      <div>
+        <h4 class="text-white font-bold mb-4">Customer Support</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-green-400 transition">Help Center</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Shipping & Delivery</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Returns & Refunds</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-green-400 transition">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4 — Contact -->
+      <div>
+        <h4 class="text-white font-bold mb-4">Contact Us</h4>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+            <span>123 Fresh Street, New York, NY 10001</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+            <span>(555) 123-4567</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            <span>hello@freshmart.com</span>
+          </li>
+        </ul>
+        <!-- Payment method icons -->
+        <div class="mt-5">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">We accept</p>
+          <div class="flex gap-2 flex-wrap">
+            <div class="bg-gray-800 rounded-md px-3 py-1.5 text-xs font-bold text-gray-300">VISA</div>
+            <div class="bg-gray-800 rounded-md px-3 py-1.5 text-xs font-bold text-gray-300">MC</div>
+            <div class="bg-gray-800 rounded-md px-3 py-1.5 text-xs font-bold text-gray-300">AMEX</div>
+            <div class="bg-gray-800 rounded-md px-3 py-1.5 text-xs font-bold text-gray-300">PayPal</div>
+            <div class="bg-gray-800 rounded-md px-3 py-1.5 text-xs font-bold text-gray-300">Apple Pay</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400">
+      <p>&copy; 2026 FreshMart. All rights reserved.</p>
+      <p>Made with 💚 for fresh food lovers</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     CART DRAWER (slide-in from right)
+     ═══════════════════════════════════════════════ -->
+<div id="cart-overlay" class="hidden fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm">
+  <div id="cart-drawer" class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out">
+    <!-- Drawer header -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121 0 2.09-.773 2.34-1.872l1.758-7.735A.75.75 0 0021.333 4.5H6"/></svg>
+        Your Cart
+        <span class="cart-count hidden bg-green-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+      </h2>
+      <button onclick="closeCart()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition" aria-label="Close cart">
+        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div id="cart-empty" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+      <span class="text-6xl mb-4">🛒</span>
+      <p class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">Your cart is empty</p>
+      <p class="text-sm text-gray-400 mb-6">Looks like you haven't added anything yet.</p>
+      <button onclick="closeCart()" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2.5 rounded-full transition">Start Shopping</button>
+    </div>
+
+    <!-- Cart content -->
+    <div id="cart-content" class="hidden flex-1 flex flex-col">
+      <div id="cart-items" class="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        <!-- JS rendered -->
+      </div>
+      <div class="border-t border-gray-100 dark:border-gray-800 px-5 py-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600 dark:text-gray-300 font-medium">Subtotal</span>
+          <span id="cart-total" class="text-xl font-bold text-gray-900 dark:text-gray-100">$0.00</span>
+        </div>
+        <p class="text-xs text-gray-400">Shipping and taxes calculated at checkout</p>
+        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full transition transform hover:scale-[1.02] shadow-md" onclick="showToast('Checkout coming soon!','🚀')">
+          Proceed to Checkout
+        </button>
+        <button onclick="closeCart()" class="w-full text-center text-sm text-green-600 hover:text-green-700 font-semibold transition py-1">
+          ← Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     BACK TO TOP
+     ═══════════════════════════════════════════════ -->
+<button id="back-to-top" class="back-to-top hidden fixed bottom-6 right-6 z-50 w-11 h-11 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg flex items-center justify-center transition" aria-label="Back to top">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+</button>
+
+<!-- JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
+
