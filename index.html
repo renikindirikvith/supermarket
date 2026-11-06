@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreshMart — Fresh Groceries Delivered to Your Door</title>
+  <title>FreshMart — Single File Preview</title>
   <meta name="description" content="Shop fresh fruits, vegetables, dairy, bakery, meats and more at FreshMart. Fast delivery, great prices, and a seamless online grocery shopping experience."/>
 
   <!-- Tailwind CSS CDN -->
@@ -21,7 +21,283 @@
   </script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css"/>
+  <style>
+/* ===== Custom CSS — extra polish on top of Tailwind ===== */
+
+/* ---------- Base resets & fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  --green-primary: #16a34a;
+  --green-dark: #15803d;
+  --green-light: #dcfce7;
+  --orange-accent: #f97316;
+  --yellow-accent: #facc15;
+  --bg-cream: #fefdf8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-cream);
+  overflow-x: hidden;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f0; }
+::-webkit-scrollbar-thumb { background: #a3d9a5; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-primary); }
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+@keyframes bounce-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.1); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up { animation: fadeInUp .55s ease-out both; }
+.animate-fade-in    { animation: fadeIn .4s ease-out both; }
+.animate-slide-in   { animation: slideInRight .35s ease-out both; }
+.animate-slide-out  { animation: slideOutRight .3s ease-in both; }
+.animate-pulse-badge { animation: pulse-badge .4s ease-in-out; }
+.animate-bounce-in  { animation: bounce-in .5s ease-out both; }
+
+/* stagger children */
+.stagger > *:nth-child(1) { animation-delay: .05s; }
+.stagger > *:nth-child(2) { animation-delay: .10s; }
+.stagger > *:nth-child(3) { animation-delay: .15s; }
+.stagger > *:nth-child(4) { animation-delay: .20s; }
+.stagger > *:nth-child(5) { animation-delay: .25s; }
+.stagger > *:nth-child(6) { animation-delay: .30s; }
+.stagger > *:nth-child(7) { animation-delay: .35s; }
+.stagger > *:nth-child(8) { animation-delay: .40s; }
+
+/* ---------- Product card hover ---------- */
+.product-card {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+.product-card .add-btn {
+  transition: background-color .2s, transform .15s;
+}
+.product-card .add-btn:hover {
+  transform: scale(1.05);
+}
+.product-card .add-btn:active {
+  transform: scale(.95);
+}
+
+/* ---------- Category tile hover ---------- */
+.category-tile {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.category-tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,.10);
+}
+
+/* ---------- Hero shimmer overlay ---------- */
+.hero-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgba(255,255,255,0) 30%,
+    rgba(255,255,255,.15) 50%,
+    rgba(255,255,255,0) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 5s infinite linear;
+}
+
+/* ---------- Cart drawer ---------- */
+.cart-overlay {
+  transition: opacity .3s ease;
+}
+.cart-drawer {
+  transition: transform .35s ease;
+}
+
+/* ---------- Toast notification ---------- */
+.toast {
+  animation: fadeInUp .35s ease-out, fadeIn .3s ease-out;
+}
+.toast-exit {
+  animation: fadeIn .25s ease-in reverse forwards;
+}
+
+/* ---------- Discount badge ---------- */
+.discount-badge {
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
+}
+
+/* ---------- Rating stars ---------- */
+.star-filled { color: #facc15; }
+.star-empty  { color: #d1d5db; }
+
+/* ---------- Countdown timer ---------- */
+.countdown-box {
+  background: linear-gradient(135deg, #1e3a2f 0%, #14532d 100%);
+}
+
+/* ---------- Benefits section icon ring ---------- */
+.benefit-icon-ring {
+  transition: transform .3s ease;
+}
+.benefit-icon-ring:hover {
+  transform: rotate(8deg) scale(1.08);
+}
+
+/* ---------- Newsletter background pattern ---------- */
+.newsletter-pattern {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.06) 0%, transparent 40%);
+}
+
+/* ---------- Mobile menu ---------- */
+.mobile-menu {
+  transition: max-height .35s ease, opacity .25s ease;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.mobile-menu.open {
+  max-height: 600px;
+  opacity: 1;
+}
+
+/* ---------- Focus visible ---------- */
+*:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Search input custom ---------- */
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(22,163,74,.25);
+}
+
+/* ---------- Skeleton loader (unused but handy) ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ---------- Hide native scrollbar in category bar ---------- */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ---------- Tiny up-arrow for "back to top" ---------- */
+.back-to-top {
+  transition: opacity .3s, transform .3s;
+}
+.back-to-top.hidden {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+
+
+/* Dark theme base colors for areas that do not use Tailwind utilities. */
+html.dark body {
+  color: #e5e7eb;
+  background-color: #030712;
+}
+
+html.dark ::-webkit-scrollbar-track { background: #111827; }
+html.dark ::-webkit-scrollbar-thumb { background: #374151; }
+
+/* ---------- Separate customer profile page ---------- */
+.profile-page { min-height: 100vh; background: #f5f7f3; color: #1f2937; }
+.dark .profile-page { background: #030712; color: #f3f4f6; }
+.profile-topbar { display: flex; min-height: 68px; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #e5e7eb; background: #fff; padding: .75rem max(1.25rem, calc((100vw - 900px) / 2)); }
+.dark .profile-topbar { border-color: #1f2937; background: #111827; }
+.profile-brand { color: #15803d; font-size: 1.2rem; font-weight: 800; text-decoration: none; }
+.profile-brand span { color: #f97316; }
+.profile-back { border-radius: 999px; background: #f0fdf4; padding: .65rem 1rem; color: #166534; font-size: .85rem; font-weight: 700; text-decoration: none; }
+.dark .profile-back { background: #052e16; color: #bbf7d0; }
+.profile-main { display: grid; width: min(100% - 2rem, 760px); gap: 1rem; margin: 2.5rem auto; }
+.profile-heading { display: flex; align-items: center; gap: 1rem; margin-bottom: .35rem; }
+.profile-avatar { display: grid; width: 3.5rem; height: 3.5rem; flex: none; place-items: center; border-radius: 50%; background: #16a34a; color: white; font-size: 1.4rem; font-weight: 800; }
+.profile-eyebrow { margin: 0 0 .2rem; color: #16a34a; font-size: .68rem; font-weight: 800; letter-spacing: .1em; }
+.profile-heading h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 800; }
+.profile-card { border: 1px solid #e5e7eb; border-radius: 1.15rem; background: #fff; padding: 1.25rem 1.4rem; box-shadow: 0 4px 18px rgba(17,24,39,.035); }
+.dark .profile-card { border-color: #374151; background: #111827; }
+.profile-card h2 { margin: 0; font-size: 1rem; font-weight: 750; }
+.profile-value { margin: .55rem 0 0; color: #4b5563; font-size: 1rem; overflow-wrap: anywhere; }
+.dark .profile-value { color: #d1d5db; }
+.profile-orders-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.profile-orders-heading h2 { font-size: 1.15rem; }
+.sample-badge { border-radius: 999px; background: #fef3c7; padding: .35rem .65rem; color: #92400e; font-size: .62rem; font-weight: 800; letter-spacing: .04em; }
+.past-orders-list { display: grid; gap: .75rem; margin-top: 1rem; }
+.past-order { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; border: 1px solid #e5e7eb; border-radius: .9rem; padding: 1rem; }
+.dark .past-order { border-color: #374151; }
+.order-number { margin: 0; color: #6b7280; font-size: .75rem; }
+.order-status { margin: .35rem 0 0; color: #15803d; font-size: .9rem; font-weight: 700; }
+.order-items { margin: .25rem 0 0; color: #6b7280; font-size: .82rem; line-height: 1.4; }
+.dark .order-number, .dark .order-items { color: #9ca3af; }
+.dark .order-status { color: #86efac; }
+.order-total { flex: none; font-size: .95rem; }
+.profile-note { margin: .8rem 0 0; color: #9ca3af; font-size: .72rem; }
+@media (max-width: 480px) {
+  .profile-topbar { min-height: 60px; padding-inline: 1rem; }
+  .profile-main { width: min(100% - 1.25rem, 760px); margin: 1.25rem auto; }
+  .profile-card { padding: 1rem; }
+  .past-order { padding: .8rem; }
+}
+
+.onefile-screen { display:none; position:fixed; inset:0; z-index:120; overflow:auto; background:#f3f7f1; }
+.onefile-screen.is-active { display:flex; }
+.onefile-profile-screen { flex-direction:column; background:#f5f7f3; }
+.onefile-product-screen { flex-direction:column; background:#f5f7f3; }
+.onefile-category-screen { flex-direction:column; background:#f5f7f3; }
+.onefile-product-screen.is-active,.onefile-category-screen.is-active { z-index:80; }
+.onefile-profile-screen .profile-main { flex:1; }
+.dark .onefile-screen,.dark .onefile-profile-screen,.dark .onefile-product-screen,.dark .onefile-category-screen { background:#030712; }
+body.product-page-route > :not(.onefile-screen):not(#cart-overlay):not(#toast-container):not(#checkout-dialog):not(script) { display:none !important; }
+body.product-page-route > .onefile-screen:not(#onefile-product-screen):not(#onefile-category-screen):not(#onefile-search-screen) { display:none !important; }
+#checkout-dialog::backdrop { background:rgba(3,7,18,.68); backdrop-filter:blur(4px); }
+.checkout-label { display:block; color:#374151; font-size:.82rem; font-weight:650; }
+.dark .checkout-label { color:#e5e7eb; }
+.checkout-input { display:block; width:100%; box-sizing:border-box; margin-top:.4rem; border:1px solid #d1d5db; border-radius:.75rem; background:#fff; padding:.75rem .85rem; color:#111827; font:inherit; font-size:.9rem; outline:none; }
+.checkout-input:focus { border-color:#16a34a; box-shadow:0 0 0 3px rgba(22,163,74,.16); }
+.dark .checkout-input { border-color:#374151; background:#1f2937; color:#f9fafb; }
+</style>
 </head>
 
 <body class="min-h-screen text-gray-800 dark:text-gray-200 antialiased bg-[#fefdf8] dark:bg-gray-950 transition-colors duration-300">
@@ -45,7 +321,7 @@
       </a>
 
       <!-- Delivery location (desktop) -->
-      <button class="hidden lg:flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition" aria-label="Change delivery location">
+      <button class="hidden lg:flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition" aria-label="Change delivery location">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         <span>Deliver to <strong class="text-gray-800 dark:text-gray-200">New York 10001</strong></span>
         <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -55,7 +331,8 @@
       <div class="hidden md:flex flex-1 max-w-xl">
         <div class="relative w-full">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input id="search-input" type="search" placeholder="Search for groceries…" class="search-input w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:focus:bg-gray-700 transition" aria-label="Search products"/>
+          <input id="search-input" type="search" placeholder="Search for groceries…" class="search-input w-full pl-10 pr-20 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:bg-gray-800 dark:focus:bg-gray-700 transition" aria-label="Search products"/>
+          <button type="button" onclick="searchProductFromButton('search-input')" class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-green-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-green-700">Search</button>
         </div>
       </div>
 
@@ -70,9 +347,9 @@
         </button>
 
         <!-- Account (desktop) -->
-        <button class="hidden sm:flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition" aria-label="My Account">
+        <button type="button" onclick="goToProfile()" class="hidden sm:flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-2 text-sm font-semibold text-green-800 hover:bg-green-100 dark:border-green-900 dark:bg-green-950/50 dark:text-green-300 dark:hover:bg-green-900 transition" aria-label="Open profile" title="Open profile">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-          <span class="hidden lg:inline">Account</span>
+          <span>Profile</span>
         </button>
 
         <!-- Cart -->
@@ -82,32 +359,37 @@
           <span class="cart-count hidden absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
         </button>
 
-        <!-- Mobile menu toggle -->
-        <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-green-600 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-          <svg id="mobile-menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <!-- Profile icon on small screens -->
+        <button type="button" onclick="goToProfile()" class="sm:hidden flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2 py-2 text-[11px] font-semibold text-green-800 hover:bg-green-100 dark:border-green-900 dark:bg-green-950/50 dark:text-green-300 dark:hover:bg-green-900 transition" aria-label="Open profile" title="Open profile">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          <span>Profile</span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile search + menu -->
-    <div id="mobile-menu" class="mobile-menu md:hidden pb-4 dark:bg-gray-900">
-      <div class="relative mb-3">
+    <!-- Mobile search bar; focusing it reveals the category list below -->
+    <div id="mobile-search-area" class="md:hidden border-t border-gray-100 dark:border-gray-800 py-2">
+      <div class="relative">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input id="mobile-search-input" type="search" placeholder="Search for groceries…" class="search-input w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:focus:bg-gray-700 transition" aria-label="Search products"/>
+        <input id="mobile-search-input" type="search" placeholder="Search products or browse categories…" class="search-input w-full pl-10 pr-20 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-200 text-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:bg-white dark:focus:bg-gray-700 transition" aria-label="Search products or browse categories" aria-controls="mobile-menu" aria-expanded="false"/>
+        <button type="button" onclick="searchProductFromButton('mobile-search-input')" class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-green-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-green-700">Search</button>
       </div>
-      <nav class="flex flex-col gap-1" aria-label="Mobile category navigation">
-        <button onclick="filterByCategory('All');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">All Products</button>
-        <button onclick="filterByCategory('Fruits & Vegetables');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥬 Fruits & Vegetables</button>
-        <button onclick="filterByCategory('Dairy');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥛 Dairy</button>
-        <button onclick="filterByCategory('Bakery');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥐 Bakery</button>
-        <button onclick="filterByCategory('Meat & Seafood');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🥩 Meat & Seafood</button>
-        <button onclick="filterByCategory('Snacks');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🍿 Snacks</button>
-        <button onclick="filterByCategory('Beverages');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-300 transition">🧃 Beverages</button>
+      <div id="mobile-menu" class="mobile-menu pb-2 dark:bg-gray-900">
+        <nav class="flex flex-col gap-1 pt-2" aria-label="Mobile category navigation">
+        <button onclick="filterByCategory('All');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">All Products</button>
+        <button onclick="filterByCategory('Fruits & Vegetables');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🥬 Fruits & Vegetables</button>
+        <button onclick="filterByCategory('Dairy');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🥛 Dairy</button>
+        <button onclick="filterByCategory('Bakery');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🥐 Bakery</button>
+        <button onclick="filterByCategory('Meat & Seafood');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🥩 Meat & Seafood</button>
+        <button onclick="filterByCategory('Snacks');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🍿 Snacks</button>
+        <button onclick="filterByCategory('Beverages');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🧃 Beverages</button>
+        <button onclick="filterByCategory('Ice Cream');toggleMobileMenu()" class="text-left px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 hover:text-green-700 transition">🍨 Ice Cream</button>
       </nav>
       <div class="flex items-center gap-2 mt-3 px-4 text-sm text-gray-500 dark:text-gray-400">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         Deliver to <strong class="text-gray-700 dark:text-gray-200">New York 10001</strong>
       </div>
+    </div>
     </div>
   </div>
 
@@ -116,12 +398,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-2 py-2 overflow-x-auto hide-scrollbar">
         <button onclick="filterByCategory('All')" data-cat="All" aria-pressed="true" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-green-600 dark:bg-green-700 text-white transition">All</button>
-        <button onclick="filterByCategory('Fruits & Vegetables')" data-cat="Fruits & Vegetables" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥬 Fruits & Vegetables</button>
-        <button onclick="filterByCategory('Dairy')" data-cat="Dairy" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥛 Dairy</button>
-        <button onclick="filterByCategory('Bakery')" data-cat="Bakery" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥐 Bakery</button>
-        <button onclick="filterByCategory('Meat & Seafood')" data-cat="Meat & Seafood" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🥩 Meat & Seafood</button>
-        <button onclick="filterByCategory('Snacks')" data-cat="Snacks" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🍿 Snacks</button>
-        <button onclick="filterByCategory('Beverages')" data-cat="Beverages" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 transition">🧃 Beverages</button>
+        <button onclick="filterByCategory('Fruits & Vegetables')" data-cat="Fruits & Vegetables" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🥬 Fruits & Vegetables</button>
+        <button onclick="filterByCategory('Dairy')" data-cat="Dairy" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🥛 Dairy</button>
+        <button onclick="filterByCategory('Bakery')" data-cat="Bakery" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🥐 Bakery</button>
+        <button onclick="filterByCategory('Meat & Seafood')" data-cat="Meat & Seafood" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🥩 Meat & Seafood</button>
+        <button onclick="filterByCategory('Snacks')" data-cat="Snacks" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🍿 Snacks</button>
+        <button onclick="filterByCategory('Beverages')" data-cat="Beverages" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🧃 Beverages</button>
+        <button onclick="filterByCategory('Ice Cream')" data-cat="Ice Cream" class="cat-btn flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-green-50 transition">🍨 Ice Cream</button>
       </div>
     </div>
   </nav>
@@ -156,7 +439,7 @@
           </a>
         </div>
         <div class="flex flex-wrap items-center gap-6 mt-10 text-sm text-green-200">
-          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>Free delivery over $50</div>
+          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>Free delivery over ₹4,740</div>
           <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>Same-day shipping</div>
           <div class="flex items-center gap-2"><svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/></svg>100% fresh guarantee</div>
         </div>
@@ -224,7 +507,7 @@
         <h3 class="font-bold text-lg mb-1">Organic Avocado Pack</h3>
         <p class="text-green-200 text-sm mb-3">Premium Hass avocados, perfectly ripe</p>
         <div class="flex items-center justify-between">
-          <div><span class="text-2xl font-bold text-yellow-300">$4.49</span><span class="text-sm text-green-300 line-through ml-2">$5.99</span></div>
+          <div><span class="text-2xl font-bold text-yellow-300">₹425.65</span><span class="text-sm text-green-300 line-through ml-2">₹567.85</span></div>
           <button onclick="addToCart(3)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
         </div>
       </div>
@@ -237,7 +520,7 @@
         <h3 class="font-bold text-lg mb-1">Farm Fresh Eggs (12)</h3>
         <p class="text-green-200 text-sm mb-3">Free-range, cage-free farm eggs</p>
         <div class="flex items-center justify-between">
-          <div><span class="text-2xl font-bold text-yellow-300">$3.99</span><span class="text-sm text-green-300 line-through ml-2">$4.99</span></div>
+          <div><span class="text-2xl font-bold text-yellow-300">₹378.25</span><span class="text-sm text-green-300 line-through ml-2">₹473.05</span></div>
           <button onclick="addToCart(8)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
         </div>
       </div>
@@ -250,7 +533,7 @@
         <h3 class="font-bold text-lg mb-1">Chicken Breast 500g</h3>
         <p class="text-green-200 text-sm mb-3">Premium quality, hormone-free chicken</p>
         <div class="flex items-center justify-between">
-          <div><span class="text-2xl font-bold text-yellow-300">$7.99</span><span class="text-sm text-green-300 line-through ml-2">$9.99</span></div>
+          <div><span class="text-2xl font-bold text-yellow-300">₹757.45</span><span class="text-sm text-green-300 line-through ml-2">₹947.05</span></div>
           <button onclick="addToCart(13)" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-4 py-2 rounded-full text-sm transition transform hover:scale-105">Add to Cart</button>
         </div>
       </div>
@@ -282,7 +565,7 @@
           <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
         </div>
         <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Lightning Fast Delivery</h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Get your groceries delivered in as little as 2 hours. Free shipping on orders over $50.</p>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Get your groceries delivered in as little as 2 hours. Free shipping on orders over ₹4,740.</p>
       </div>
       <!-- Benefit 3 -->
       <div class="text-center group">
@@ -329,7 +612,7 @@
     <p class="text-green-100 mb-8 text-sm sm:text-base max-w-md mx-auto">Subscribe to our newsletter and receive weekly offers, new product alerts, and seasonal recipes straight to your inbox.</p>
     <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
       <label for="newsletter-email" class="sr-only">Email address</label>
-      <input id="newsletter-email" type="email" placeholder="Enter your email address" required class="flex-1 px-5 py-3 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-md" />
+      <input id="newsletter-email" type="email" placeholder="Enter your email address" required class="flex-1 px-5 py-3 rounded-full text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-md" />
       <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 flex-shrink-0">
         Subscribe
       </button>
@@ -433,16 +716,20 @@
 <!-- ═══════════════════════════════════════════════
      CART DRAWER (slide-in from right)
      ═══════════════════════════════════════════════ -->
+
+
+
+
 <div id="cart-overlay" class="hidden fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm">
   <div id="cart-drawer" class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out">
     <!-- Drawer header -->
-    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
       <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121 0 2.09-.773 2.34-1.872l1.758-7.735A.75.75 0 0021.333 4.5H6"/></svg>
         Your Cart
         <span class="cart-count hidden bg-green-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
       </h2>
-      <button onclick="closeCart()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition" aria-label="Close cart">
+      <button onclick="closeCart()" class="p-2 hover:bg-gray-100 rounded-lg transition" aria-label="Close cart">
         <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -460,13 +747,13 @@
       <div id="cart-items" class="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         <!-- JS rendered -->
       </div>
-      <div class="border-t border-gray-100 dark:border-gray-800 px-5 py-4 space-y-3">
+      <div class="border-t border-gray-100 px-5 py-4 space-y-3">
         <div class="flex justify-between items-center">
           <span class="text-gray-600 dark:text-gray-300 font-medium">Subtotal</span>
-          <span id="cart-total" class="text-xl font-bold text-gray-900 dark:text-gray-100">$0.00</span>
+          <span id="cart-total" class="text-xl font-bold text-gray-900 dark:text-gray-100">₹0.00</span>
         </div>
-        <p class="text-xs text-gray-400">Shipping and taxes calculated at checkout</p>
-        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full transition transform hover:scale-[1.02] shadow-md" onclick="showToast('Checkout coming soon!','🚀')">
+        <p id="cart-delivery-note" class="text-xs text-gray-500 dark:text-gray-400">Delivery fee calculated at checkout · ₹12 handling</p>
+        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full transition transform hover:scale-[1.02] shadow-md" onclick="openCheckout()">
           Proceed to Checkout
         </button>
         <button onclick="closeCart()" class="w-full text-center text-sm text-green-600 hover:text-green-700 font-semibold transition py-1">
@@ -477,6 +764,21 @@
   </div>
 </div>
 
+<!-- CHECKOUT: address, delivery slot, fee breakdown and confirmation -->
+<dialog id="checkout-dialog" class="m-auto max-h-[94vh] w-[calc(100%-1rem)] max-w-2xl overflow-y-auto rounded-3xl border-0 bg-white p-0 text-gray-800 shadow-2xl backdrop:bg-black/60 dark:bg-gray-900 dark:text-gray-100" onclick="if(event.target===this)closeCheckout()" aria-labelledby="checkout-title">
+  <section id="checkout-form-view" class="p-5 sm:p-8">
+    <div class="mb-6 flex items-start justify-between gap-4"><div><p class="text-xs font-bold uppercase tracking-widest text-green-600">FreshMart checkout</p><h2 id="checkout-title" class="mt-1 text-2xl font-extrabold sm:text-3xl">Delivery details</h2><p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Choose where and when your order should arrive.</p></div><button type="button" onclick="closeCheckout()" class="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Close checkout">✕</button></div>
+    <form id="checkout-form" class="grid gap-5">
+      <div><h3 class="mb-3 font-bold">Contact and address</h3><div class="grid gap-3 sm:grid-cols-2"><label class="checkout-label">Full name<input id="delivery-name" class="checkout-input" autocomplete="name" required placeholder="Name for delivery"/></label><label class="checkout-label">Mobile number<input id="delivery-phone" class="checkout-input" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+91 98765 43210"/></label><label class="checkout-label sm:col-span-2">Street address<input id="delivery-address" class="checkout-input" autocomplete="street-address" required placeholder="House / flat, street, area"/></label><label class="checkout-label">City<input id="delivery-city" class="checkout-input" autocomplete="address-level2" required placeholder="City"/></label><label class="checkout-label">PIN code<input id="delivery-pincode" class="checkout-input" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" required placeholder="6-digit PIN code"/></label></div></div>
+      <div><h3 class="mb-3 font-bold">Choose a delivery time</h3><label class="checkout-label">Available delivery slot<select id="delivery-slot" class="checkout-input" required><option value="" disabled selected>Select a time</option></select></label></div>
+      <div class="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800"><h3 class="mb-3 font-bold">Order total</h3><div class="space-y-2 text-sm"><div class="flex justify-between"><span class="text-gray-600 dark:text-gray-300">Items subtotal</span><span id="checkout-subtotal">₹0</span></div><div class="flex justify-between"><span class="text-gray-600 dark:text-gray-300">Delivery fee</span><span id="checkout-delivery-fee">₹0</span></div><div class="flex justify-between"><span class="text-gray-600 dark:text-gray-300">Handling fee</span><span id="checkout-handling-fee">₹12</span></div><div class="flex justify-between border-t border-gray-200 pt-2 text-base font-extrabold dark:border-gray-700"><span>Total</span><span id="checkout-grand-total">₹0</span></div></div><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Delivery is free for orders of ₹1,000 or more. No payment is collected in this preview.</p></div>
+      <div class="flex flex-col-reverse gap-3 sm:flex-row"><button type="button" onclick="closeCheckout();openCart()" class="rounded-full border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">Back to cart</button><button type="submit" class="flex-1 rounded-full bg-green-600 px-5 py-3 font-bold text-white shadow-md transition hover:bg-green-700">Place order</button></div>
+      <p class="text-center text-xs text-gray-400">This is a front-end checkout preview. Orders are not sent to a store.</p>
+    </form>
+  </section>
+  <section id="checkout-confirmation-view" class="hidden p-6 text-center sm:p-10" aria-live="polite"><div class="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-green-100 text-3xl dark:bg-green-950">✅</div><p class="text-xs font-bold uppercase tracking-widest text-green-600">Order confirmed</p><h2 class="mt-2 text-3xl font-extrabold">Thanks for your order!</h2><p class="mt-2 text-gray-500 dark:text-gray-400">Your checkout is complete in this preview.</p><div class="mx-auto mt-6 max-w-md rounded-2xl bg-gray-50 p-5 text-left dark:bg-gray-800"><div class="flex justify-between gap-4"><span class="text-gray-500 dark:text-gray-400">Order number</span><strong id="confirmation-order-number"></strong></div><div class="mt-3 flex justify-between gap-4"><span class="text-gray-500 dark:text-gray-400">Delivery slot</span><strong id="confirmation-slot" class="text-right"></strong></div><div class="mt-3 flex justify-between gap-4"><span class="text-gray-500 dark:text-gray-400">Total</span><strong id="confirmation-total"></strong></div><p id="confirmation-address" class="mt-4 whitespace-pre-line border-t border-gray-200 pt-3 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300"></p></div><button type="button" onclick="closeCheckout();showOneFileScreen('shop')" class="mt-7 rounded-full bg-green-600 px-7 py-3 font-bold text-white hover:bg-green-700">Continue shopping</button></section>
+</dialog>
+
 <!-- ═══════════════════════════════════════════════
      BACK TO TOP
      ═══════════════════════════════════════════════ -->
@@ -485,7 +787,906 @@
 </button>
 
 <!-- JavaScript -->
-<script src="script.js"></script>
+<script>
+// ===== FreshMart — Frontend JavaScript =====
+// ===== Theme controls =====
+const THEME_KEY = 'freshmart-theme';
+
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  document.documentElement.classList.toggle('dark', isDark);
+  document.querySelector('#theme-icon-sun')?.classList.toggle('hidden', !isDark);
+  document.querySelector('#theme-icon-moon')?.classList.toggle('hidden', isDark);
+  const toggle = document.querySelector('#theme-toggle');
+  if (toggle) {
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggle.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+}
+
+function toggleTheme() {
+  const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+  try { localStorage.setItem(THEME_KEY, nextTheme); } catch (error) { /* Theme still works when storage is unavailable. */ }
+  applyTheme(nextTheme);
+}
+
+function getSavedTheme() {
+  try { return localStorage.getItem(THEME_KEY) || 'light'; } catch (error) { return 'light'; }
+}
+
+const inrFormatter = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function formatINR(amount) {
+  return inrFormatter.format(amount);
+}
+
+
+// ──────────────────────────────────────
+// 1. PRODUCT DATA
+// ──────────────────────────────────────
+// Prices below are in INR, converted from the original sample prices at about ₹94.80 per USD.
+const products = [
+  // Fruits & Vegetables
+  { id: 1,  name: "Organic Bananas",        category: "Fruits & Vegetables", price: 141.25,  originalPrice: 188.65,  rating: 4.8, reviews: 234, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&h=400&fit=crop", badge: "Organic" },
+  { id: 2,  name: "Fresh Strawberries",      category: "Fruits & Vegetables", price: 378.25,  originalPrice: null,  rating: 4.7, reviews: 189, image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&h=400&fit=crop", badge: null },
+  { id: 3,  name: "Avocado (3 pack)",        category: "Fruits & Vegetables", price: 425.65,  originalPrice: 567.85,  rating: 4.6, reviews: 312, image: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 4,  name: "Baby Spinach 250g",       category: "Fruits & Vegetables", price: 283.45,  originalPrice: null,  rating: 4.5, reviews: 98,  image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&h=400&fit=crop", badge: "Fresh" },
+
+  // Dairy
+  { id: 5,  name: "Whole Milk 1L",           category: "Dairy",               price: 236.05,  originalPrice: null,  rating: 4.9, reviews: 456, image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop", badge: null },
+  { id: 6,  name: "Greek Yogurt 500g",       category: "Dairy",               price: 311.89,  originalPrice: 406.69,  rating: 4.7, reviews: 278, image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 7,  name: "Cheddar Cheese Block",    category: "Dairy",               price: 567.85,  originalPrice: null,  rating: 4.8, reviews: 167, image: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400&h=400&fit=crop", badge: null },
+  { id: 8,  name: "Farm Fresh Eggs (12)",    category: "Dairy",               price: 378.25,  originalPrice: 473.05,  rating: 4.9, reviews: 534, image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=400&fit=crop", badge: "Best Seller" },
+
+  // Bakery
+  { id: 9,  name: "Sourdough Bread",         category: "Bakery",              price: 425.65,  originalPrice: null,  rating: 4.8, reviews: 203, image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 10, name: "Croissants (4 pack)",     category: "Bakery",              price: 567.85,  originalPrice: 710.05,  rating: 4.6, reviews: 145, image: "https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 11, name: "Chocolate Muffins (6)",   category: "Bakery",              price: 615.25,  originalPrice: null,  rating: 4.5, reviews: 112, image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&h=400&fit=crop", badge: null },
+  { id: 12, name: "Multigrain Bagels (6)",   category: "Bakery",              price: 378.25,  originalPrice: null,  rating: 4.4, reviews: 87,  image: "https://images.unsplash.com/photo-1603532648955-039310d9ed75?w=400&h=400&fit=crop", badge: null },
+
+  // Meat & Seafood
+  { id: 13, name: "Chicken Breast 500g",     category: "Meat & Seafood",      price: 757.45,  originalPrice: 947.05,  rating: 4.7, reviews: 345, image: "https://images.unsplash.com/photo-1604503468506-a8da13d82571?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 14, name: "Atlantic Salmon Fillet",   category: "Meat & Seafood",      price: 1231.45, originalPrice: null,  rating: 4.9, reviews: 198, image: "https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=400&h=400&fit=crop", badge: "Premium" },
+  { id: 15, name: "Ground Beef 400g",        category: "Meat & Seafood",      price: 615.25,  originalPrice: null,  rating: 4.6, reviews: 267, image: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=400&h=400&fit=crop", badge: null },
+  { id: 16, name: "Jumbo Shrimp 300g",       category: "Meat & Seafood",      price: 1041.85, originalPrice: 1326.25, rating: 4.8, reviews: 156, image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&h=400&fit=crop", badge: "Sale" },
+
+  // Snacks
+  { id: 17, name: "Mixed Nuts 350g",         category: "Snacks",              price: 710.05,  originalPrice: null,  rating: 4.7, reviews: 213, image: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=400&fit=crop", badge: null },
+  { id: 18, name: "Dark Chocolate Bar",      category: "Snacks",              price: 330.85,  originalPrice: null,  rating: 4.8, reviews: 342, image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop", badge: "Popular" },
+  { id: 19, name: "Potato Chips Variety",     category: "Snacks",              price: 473.05,  originalPrice: 615.25,  rating: 4.4, reviews: 178, image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 20, name: "Granola Bars (8 pack)",   category: "Snacks",              price: 501.49,  originalPrice: null,  rating: 4.5, reviews: 134, image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop", badge: null },
+
+  // Beverages
+  { id: 21, name: "Fresh Orange Juice 1L",   category: "Beverages",           price: 473.05,  originalPrice: null,  rating: 4.8, reviews: 289, image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 22, name: "Sparkling Water 6-pack",  category: "Beverages",           price: 520.45,  originalPrice: 662.65,  rating: 4.6, reviews: 167, image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=400&fit=crop", badge: "Sale" },
+  { id: 23, name: "Green Tea (20 bags)",     category: "Beverages",           price: 378.25,  originalPrice: null,  rating: 4.7, reviews: 234, image: "https://images.unsplash.com/photo-1556881286-fc6915169721?w=400&h=400&fit=crop", badge: null },
+  { id: 24, name: "Cold Brew Coffee 500ml",  category: "Beverages",           price: 615.25,  originalPrice: 757.45,  rating: 4.9, reviews: 312, image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=400&fit=crop", badge: "Popular" },
+
+  // Ice Cream
+  { id: 25, name: "Vanilla Bean Ice Cream 500ml", category: "Ice Cream", price: 349, originalPrice: null, rating: 4.8, reviews: 184, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=400&fit=crop", badge: "Popular" },
+  { id: 26, name: "Chocolate Fudge Ice Cream 500ml", category: "Ice Cream", price: 379, originalPrice: null, rating: 4.9, reviews: 221, image: "https://images.unsplash.com/photo-1501446529957-6226bd447c46?w=400&h=400&fit=crop", badge: null },
+  { id: 27, name: "Mango Sorbet 450ml", category: "Ice Cream", price: 329, originalPrice: null, rating: 4.6, reviews: 96, image: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop", badge: "Fruit" },
+  { id: 28, name: "Strawberry Cheesecake Ice Cream 500ml", category: "Ice Cream", price: 399, originalPrice: null, rating: 4.7, reviews: 143, image: "https://images.unsplash.com/photo-1557142046-c704a3adf364?w=400&h=400&fit=crop", badge: "New" },
+  { id: 29, name: "Cookies & Cream Ice Cream 500ml", category: "Ice Cream", price: 389, originalPrice: null, rating: 4.8, reviews: 176, image: "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400&h=400&fit=crop", badge: null },
+  { id: 30, name: "Pistachio Kulfi (4 pack)", category: "Ice Cream", price: 299, originalPrice: null, rating: 4.6, reviews: 88, image: "https://images.unsplash.com/photo-1505394033641-40c6ad1178d7?w=400&h=400&fit=crop", badge: "Indian favourite" },
+  { id: 31, name: "Salted Caramel Ice Cream 500ml", category: "Ice Cream", price: 409, originalPrice: null, rating: 4.9, reviews: 132, image: "https://images.unsplash.com/photo-1488900128323-21503983a07e?w=400&h=400&fit=crop", badge: null },
+
+  // More Fruits & Vegetables
+  { id: 32, name: "Fuji Apples (4 pack)", category: "Fruits & Vegetables", price: 329, originalPrice: null, rating: 4.8, reviews: 142, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 33, name: "Sweet Corn (2 pack)", category: "Fruits & Vegetables", price: 179, originalPrice: null, rating: 4.5, reviews: 76, image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=400&fit=crop", badge: null },
+
+  // More Dairy
+  { id: 34, name: "Unsalted Butter 250g", category: "Dairy", price: 249, originalPrice: null, rating: 4.8, reviews: 168, image: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop", badge: null },
+  { id: 35, name: "Oat Milk 1L", category: "Dairy", price: 219, originalPrice: null, rating: 4.6, reviews: 129, image: "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?w=400&h=400&fit=crop", badge: "Plant based" },
+
+  // More Bakery
+  { id: 36, name: "Cinnamon Rolls (4 pack)", category: "Bakery", price: 449, originalPrice: null, rating: 4.7, reviews: 121, image: "https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 37, name: "Blueberry Muffins (4 pack)", category: "Bakery", price: 399, originalPrice: null, rating: 4.6, reviews: 95, image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&h=400&fit=crop", badge: null },
+
+  // More Meat & Seafood
+  { id: 38, name: "Garlic Herb Chicken Thighs 500g", category: "Meat & Seafood", price: 699, originalPrice: null, rating: 4.7, reviews: 117, image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 39, name: "White Fish Fillets 400g", category: "Meat & Seafood", price: 849, originalPrice: null, rating: 4.8, reviews: 83, image: "https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=400&h=400&fit=crop", badge: null },
+
+  // More Snacks
+  { id: 40, name: "Sea Salt Popcorn (6 pack)", category: "Snacks", price: 279, originalPrice: null, rating: 4.5, reviews: 104, image: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&h=400&fit=crop", badge: null },
+  { id: 41, name: "Fruit & Nut Trail Mix 300g", category: "Snacks", price: 359, originalPrice: null, rating: 4.7, reviews: 139, image: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=400&fit=crop", badge: "Popular" },
+
+  // More Beverages
+  { id: 42, name: "Fresh Lemonade 1L", category: "Beverages", price: 249, originalPrice: null, rating: 4.6, reviews: 102, image: "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?w=400&h=400&fit=crop", badge: "Fresh" },
+  { id: 43, name: "Coconut Water 1L", category: "Beverages", price: 299, originalPrice: null, rating: 4.7, reviews: 156, image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop", badge: null },
+];
+
+const categories = [
+  { name: "Fruits & Vegetables", icon: "🥬", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=300&fit=crop", color: "from-green-400 to-green-600" },
+  { name: "Dairy",               icon: "🥛", image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=400&h=300&fit=crop", color: "from-blue-400 to-blue-600" },
+  { name: "Bakery",              icon: "🥐", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop", color: "from-amber-400 to-amber-600" },
+  { name: "Meat & Seafood",      icon: "🥩", image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=300&fit=crop", color: "from-red-400 to-red-600" },
+  { name: "Snacks",              icon: "🍿", image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=300&fit=crop", color: "from-purple-400 to-purple-600" },
+  { name: "Beverages",           icon: "🧃", image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop", color: "from-orange-400 to-orange-600" },
+  { name: "Ice Cream",           icon: "🍨", image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop", color: "from-pink-400 to-rose-600" },
+];
+
+const testimonials = [
+  { name: "Sarah M.", avatar: "SM", text: "FreshMart has completely changed how I shop for groceries. The produce is always fresh and delivery is lightning fast!", rating: 5 },
+  { name: "James K.", avatar: "JK", text: "Best online grocery store I've used. Great selection, competitive prices, and the app is so easy to navigate.", rating: 5 },
+  { name: "Priya R.", avatar: "PR", text: "I love the organic selection and the deals are unbeatable. My family saves so much every week!", rating: 4 },
+];
+
+// ──────────────────────────────────────
+// 2. STATE
+// ──────────────────────────────────────
+let cart = (() => { try { return JSON.parse(localStorage.getItem('freshmart-cart') || '[]'); } catch { return []; } })();
+let activeCategory = "All";
+let searchQuery = "";
+let cartCloseTimer = null;
+
+// ──────────────────────────────────────
+function goToProfile() {
+  if (typeof window.showOneFileScreen === 'function') window.showOneFileScreen('profile');
+}
+// ──────────────────────────────────────
+// 3. DOM HELPERS
+// ──────────────────────────────────────
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+// ──────────────────────────────────────
+// 4. RENDER FUNCTIONS
+// ──────────────────────────────────────
+
+/** Star rating HTML */
+function starsHTML(rating) {
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    html += i <= Math.round(rating)
+      ? '<svg class="w-4 h-4 star-filled inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>'
+      : '<svg class="w-4 h-4 star-empty inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+  }
+  return html;
+}
+
+/** Badge color map */
+function badgeColor(badge) {
+  const map = {
+    "Sale": "bg-red-500",
+    "Organic": "bg-green-600",
+    "Fresh": "bg-emerald-500",
+    "Best Seller": "bg-amber-500",
+    "Popular": "bg-purple-500",
+    "Premium": "bg-indigo-600",
+  };
+  return map[badge] || "bg-gray-500";
+}
+
+/** Render category tiles */
+function renderCategoryTiles() {
+  const container = $('#category-tiles');
+  container.innerHTML = categories.map(cat => `
+    <button onclick="filterByCategory('${cat.name}')"
+            class="category-tile group relative rounded-2xl overflow-hidden shadow-md cursor-pointer focus:outline-none"
+            aria-label="Browse ${cat.name}">
+      <img src="${cat.image}" alt="${cat.name}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy"/>
+      <div class="absolute inset-0 bg-gradient-to-t ${cat.color} opacity-60 group-hover:opacity-70 transition-opacity"></div>
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+        <span class="text-3xl sm:text-4xl mb-1">${cat.icon}</span>
+        <span class="font-semibold text-sm sm:text-base drop-shadow">${cat.name}</span>
+      </div>
+    </button>
+  `).join('');
+}
+
+/** Render product cards */
+function renderProducts() {
+  const container = $('#products-grid');
+  let filtered = products;
+
+  if (activeCategory !== "All") {
+    filtered = filtered.filter(p => p.category === activeCategory);
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center py-16">
+        <p class="text-6xl mb-4">🔍</p>
+        <p class="text-xl text-gray-500 dark:text-gray-400 font-medium">No products found</p>
+        <p class="text-gray-400 dark:text-gray-500 mt-1">Try a different search or category</p>
+        <button onclick="clearFilters()" class="mt-4 px-5 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition">Show All Products</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((p, i) => `
+    <div class="product-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden animate-fade-in-up cursor-pointer" style="animation-delay:${i * 40}ms" onclick="openProductDetail(${p.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProductDetail(${p.id})}" role="button" tabindex="0" aria-label="View ${p.name} details">
+      <div class="relative">
+        <img src="${p.image}" alt="${p.name}" class="w-full h-44 sm:h-52 object-cover" loading="lazy"/>
+        ${p.badge ? `<span class="${badgeColor(p.badge)} text-white text-xs font-bold px-3 py-1 rounded-full absolute top-3 left-3 shadow">${p.badge}</span>` : ''}
+        ${p.originalPrice ? `<span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full absolute top-3 right-3">-${Math.round((1 - p.price/p.originalPrice)*100)}%</span>` : ''}
+      </div>
+      <div class="p-4">
+        <p class="text-xs text-green-600 font-medium mb-1">${p.category}</p>
+        <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base leading-snug mb-2 line-clamp-2">${p.name}</h3>
+        <div class="flex items-center gap-1 mb-3">
+          ${starsHTML(p.rating)}
+          <span class="text-xs text-gray-400 ml-1">(${p.reviews})</span>
+        </div>
+        <div class="flex items-end justify-between">
+          <div>
+            <span class="text-lg font-bold text-gray-900 dark:text-gray-100">${formatINR(p.price)}</span>
+            ${p.originalPrice ? `<span class="text-sm text-gray-400 line-through ml-2">${formatINR(p.originalPrice)}</span>` : ''}
+          </div>
+          <button onclick="event.stopPropagation();addToCart(${p.id})"
+                  class="add-btn bg-green-600 hover:bg-green-700 text-white p-2.5 rounded-xl shadow-md focus:outline-none"
+                  aria-label="Add ${p.name} to cart"
+                  title="Add to cart">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openProductDetail(productId) {
+  if (!products.some(product => product.id === productId)) return;
+  const productUrl = new URL(window.location.href);
+  productUrl.search = '';
+  productUrl.searchParams.set('product', String(productId));
+  window.location.href = productUrl.href;
+}
+
+function returnToShop() {
+  const shopUrl = new URL(window.location.href);
+  shopUrl.search = '';
+  window.location.href = shopUrl.href;
+}
+
+function openCategoryPage(categoryName) {
+  const categoryUrl = new URL(window.location.href);
+  categoryUrl.search = '';
+  categoryUrl.searchParams.set('category', categoryName);
+  window.location.href = categoryUrl.href;
+}
+
+function openSearchResultsPage(query) {
+  const searchUrl = new URL(window.location.href);
+  searchUrl.search = '';
+  searchUrl.searchParams.set('search', query.trim());
+  window.location.href = searchUrl.href;
+}
+
+function renderOneFileProductDetail(productId) {
+  const product = products.find(item => item.id === Number(productId));
+  const content = $('#onefile-product-content');
+  const relatedGrid = $('#onefile-related-products');
+  if (!product || !content || !relatedGrid) return;
+
+  content.innerHTML = `
+    <div class="grid items-center gap-7 md:grid-cols-2 md:gap-10">
+      <div class="overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-800"><img src="${product.image}" alt="${product.name}" class="h-72 w-full object-cover sm:h-96"/></div>
+      <div><p class="text-sm font-semibold text-green-700 dark:text-green-400">${product.category}</p><h1 class="mt-2 text-3xl font-extrabold leading-tight text-gray-900 dark:text-white sm:text-4xl">${product.name}</h1><div class="mt-3 flex items-center gap-1">${starsHTML(product.rating)}<span class="ml-2 text-sm text-gray-500 dark:text-gray-400">${product.rating} · ${product.reviews} reviews</span></div><p class="mt-5 text-sm leading-6 text-gray-600 dark:text-gray-300">Freshly selected quality from FreshMart. Add it to your basket and continue shopping for more everyday favourites.</p><div class="mt-6 flex items-baseline gap-3"><strong class="text-3xl text-gray-900 dark:text-white">${formatINR(product.price)}</strong>${product.originalPrice ? `<span class="text-base text-gray-400 line-through">${formatINR(product.originalPrice)}</span>` : ''}</div><button type="button" onclick="addToCart(${product.id})" class="mt-6 rounded-full bg-green-600 px-7 py-3 font-bold text-white shadow-md transition hover:bg-green-700">Add to Cart</button></div>
+    </div>`;
+
+  let related = products.filter(item => item.id !== product.id && item.category === product.category);
+  if (related.length < 4) {
+    related = related.concat(products.filter(item => item.id !== product.id && !related.some(other => other.id === item.id)));
+  }
+  related = related.slice(0, 4);
+  relatedGrid.innerHTML = related.map(item => `
+    <article class="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <button type="button" onclick="openProductDetail(${item.id})" class="block w-full text-left"><img src="${item.image}" alt="${item.name}" class="h-32 w-full rounded-xl object-cover" loading="lazy"/><p class="mt-3 text-xs text-green-700 dark:text-green-400">${item.category}</p><p class="mt-1 min-h-10 text-sm font-semibold text-gray-900 dark:text-white">${item.name}</p><p class="mt-1 font-bold text-gray-900 dark:text-white">${formatINR(item.price)}</p></button>
+      <button type="button" onclick="addToCart(${item.id})" class="mt-3 w-full rounded-full bg-green-600 px-3 py-2 text-xs font-bold text-white hover:bg-green-700">Add to cart</button>
+    </article>`).join('');
+}
+
+function renderOneFileCategoryPage(categoryName) {
+  const category = categories.find(item => item.name === categoryName);
+  const title = $('#onefile-category-title');
+  const grid = $('#onefile-category-products');
+  if (!category || !grid) return;
+  title.textContent = category.name;
+  $('#onefile-category-description').textContent = `Browse all our ${category.name.toLowerCase()} picks.`;
+  const matches = products.filter(product => product.category === categoryName);
+  grid.innerHTML = matches.map(product => `
+    <article class="product-card overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-gray-800">
+      <button type="button" onclick="openProductDetail(${product.id})" class="block w-full text-left"><img src="${product.image}" alt="${product.name}" class="h-40 w-full object-cover sm:h-48"/><div class="p-4"><p class="text-xs font-medium text-green-700 dark:text-green-400">${product.category}</p><h3 class="mt-1 min-h-10 font-semibold text-gray-900 dark:text-white">${product.name}</h3><div class="mt-2 flex items-center gap-1">${starsHTML(product.rating)}<span class="ml-1 text-xs text-gray-500">${product.rating} (${product.reviews})</span></div><p class="mt-2 font-bold text-gray-900 dark:text-white">${formatINR(product.price)}</p></div></button>
+      <div class="px-4 pb-4"><button type="button" onclick="addToCart(${product.id})" class="w-full rounded-full bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700">Add to cart</button></div>
+    </article>`).join('');
+}
+
+function renderOneFileSearchPage(query) {
+  $('#onefile-search-title').textContent = `Search results for “${query}”`;
+  const normalized = query.toLowerCase();
+  const matches = products.filter(product => product.name.toLowerCase().includes(normalized) || product.category.toLowerCase().includes(normalized));
+  const grid = $('#onefile-search-products');
+  const note = $('#onefile-search-note');
+  const displayProducts = matches.length ? matches : products.slice(0, 4);
+  note.textContent = matches.length ? `${matches.length} matching product${matches.length === 1 ? '' : 's'}.` : `No exact match for “${query}”. Here are some popular products.`;
+  grid.innerHTML = displayProducts.map(product => `
+    <article class="product-card overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-gray-800"><button type="button" onclick="openProductDetail(${product.id})" class="block w-full text-left"><img src="${product.image}" alt="${product.name}" class="h-40 w-full object-cover sm:h-48"/><div class="p-4"><p class="text-xs font-medium text-green-700 dark:text-green-400">${product.category}</p><h3 class="mt-1 min-h-10 font-semibold text-gray-900 dark:text-white">${product.name}</h3><p class="mt-2 font-bold text-gray-900 dark:text-white">${formatINR(product.price)}</p></div></button><div class="px-4 pb-4"><button type="button" onclick="addToCart(${product.id})" class="w-full rounded-full bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700">Add to cart</button></div></article>`).join('');
+}
+
+/** Render testimonials */
+function renderTestimonials() {
+  const container = $('#testimonials-grid');
+  container.innerHTML = testimonials.map(t => `
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-sm">${t.avatar}</div>
+        <div>
+          <p class="font-semibold text-gray-800 dark:text-gray-100">${t.name}</p>
+          <div class="flex gap-0.5">${starsHTML(t.rating)}</div>
+        </div>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed italic">"${t.text}"</p>
+    </div>
+  `).join('');
+}
+
+// ──────────────────────────────────────
+// 5. CART LOGIC
+// ──────────────────────────────────────
+
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  const existing = cart.find(c => c.id === productId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  updateCartUI();
+  showToast(`${product.name} added to cart!`, "✅");
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(c => c.id !== productId);
+  updateCartUI();
+  renderCartDrawer();
+}
+
+function updateQty(productId, delta) {
+  const item = cart.find(c => c.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    removeFromCart(productId);
+    return;
+  }
+  updateCartUI();
+  renderCartDrawer();
+}
+
+function getCartCount() {
+  return cart.reduce((sum, c) => sum + c.qty, 0);
+}
+
+function getCartTotal() {
+  return cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+}
+
+function getCheckoutFees() {
+  const subtotal = getCartTotal();
+  return { subtotal, delivery: subtotal >= 1000 ? 0 : 49, handling: 12, total: subtotal + (subtotal >= 1000 ? 0 : 49) + 12 };
+}
+
+function updateCheckoutSummary() {
+  const fees = getCheckoutFees();
+  $('#checkout-subtotal').textContent = formatINR(fees.subtotal);
+  $('#checkout-delivery-fee').textContent = fees.delivery ? formatINR(fees.delivery) : 'FREE';
+  $('#checkout-handling-fee').textContent = formatINR(fees.handling);
+  $('#checkout-grand-total').textContent = formatINR(fees.total);
+}
+
+function populateDeliverySlots() {
+  const select = $('#delivery-slot');
+  if (!select) return;
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const formatDay = date => new Intl.DateTimeFormat('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }).format(date);
+  const slots = [
+    [`${formatDay(today)} · 2–4 PM`, `${formatDay(today)} · 2–4 PM`],
+    [`${formatDay(today)} · 4–6 PM`, `${formatDay(today)} · 4–6 PM`],
+    [`${formatDay(tomorrow)} · 9–11 AM`, `${formatDay(tomorrow)} · 9–11 AM`],
+    [`${formatDay(tomorrow)} · 11 AM–1 PM`, `${formatDay(tomorrow)} · 11 AM–1 PM`]
+  ];
+  select.replaceChildren(new Option('Select a time', '', true, true));
+  slots.forEach(([label, value]) => select.add(new Option(label, value)));
+}
+
+function openCheckout() {
+  if (!cart.length) {
+    showToast('Add items to your cart before checkout.', '🛒');
+    return;
+  }
+  closeCart();
+  const dialog = $('#checkout-dialog');
+  $('#checkout-form-view').classList.remove('hidden');
+  $('#checkout-confirmation-view').classList.add('hidden');
+  populateDeliverySlots();
+  updateCheckoutSummary();
+  try {
+    const profile = JSON.parse(localStorage.getItem('freshmart-account-profile') || 'null');
+    const saved = JSON.parse(localStorage.getItem('freshmart-checkout-details') || 'null');
+    $('#delivery-name').value = saved?.name || profile?.name || '';
+    $('#delivery-phone').value = saved?.phone || profile?.phone || '';
+    $('#delivery-address').value = saved?.address || '';
+    $('#delivery-city').value = saved?.city || '';
+    $('#delivery-pincode').value = saved?.pincode || '';
+  } catch {}
+  if (dialog && !dialog.open) dialog.showModal();
+}
+
+function closeCheckout() {
+  const dialog = $('#checkout-dialog');
+  if (dialog?.open) dialog.close();
+}
+
+function handleCheckoutSubmit(event) {
+  event.preventDefault();
+  if (!cart.length) return;
+  const delivery = {
+    name: $('#delivery-name').value.trim(),
+    phone: $('#delivery-phone').value.trim(),
+    address: $('#delivery-address').value.trim(),
+    city: $('#delivery-city').value.trim(),
+    pincode: $('#delivery-pincode').value.trim(),
+    slot: $('#delivery-slot').value
+  };
+  const fees = getCheckoutFees();
+  const order = {
+    number: `FM-${Date.now().toString().slice(-7)}`,
+    date: new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date()),
+    status: 'Confirmed',
+    items: cart.map(item => `${item.name} × ${item.qty}`).join(', '),
+    total: fees.total,
+    deliverySlot: delivery.slot,
+    deliveryAddress: `${delivery.address}, ${delivery.city} ${delivery.pincode}`
+  };
+  try {
+    localStorage.setItem('freshmart-checkout-details', JSON.stringify(delivery));
+    const orders = JSON.parse(localStorage.getItem('freshmart-orders') || '[]');
+    orders.unshift(order);
+    localStorage.setItem('freshmart-orders', JSON.stringify(orders));
+  } catch {}
+  $('#confirmation-order-number').textContent = order.number;
+  $('#confirmation-slot').textContent = delivery.slot;
+  $('#confirmation-total').textContent = formatINR(fees.total);
+  $('#confirmation-address').textContent = `${delivery.name} · ${delivery.phone}\n${order.deliveryAddress}`;
+  $('#checkout-form-view').classList.add('hidden');
+  $('#checkout-confirmation-view').classList.remove('hidden');
+  cart = [];
+  updateCartUI();
+  renderCartDrawer();
+}
+
+function updateCartUI() {
+  try { localStorage.setItem('freshmart-cart', JSON.stringify(cart)); } catch {}
+  const badges = $$('.cart-count');
+  const count = getCartCount();
+  badges.forEach(b => {
+    b.textContent = count;
+    b.classList.toggle('hidden', count === 0);
+    // quick pulse
+    b.classList.remove('animate-pulse-badge');
+    void b.offsetWidth;            // force reflow
+    b.classList.add('animate-pulse-badge');
+  });
+}
+
+function renderCartDrawer() {
+  const container = $('#cart-items');
+  const totalEl = $('#cart-total');
+  const emptyEl = $('#cart-empty');
+  const contentEl = $('#cart-content');
+
+  if (cart.length === 0) {
+    emptyEl.classList.remove('hidden');
+    contentEl.classList.add('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  contentEl.classList.remove('hidden');
+
+  container.innerHTML = cart.map(item => `
+    <div class="flex gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+      <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" loading="lazy"/>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">${item.name}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">${formatINR(item.price)} each</p>
+        <div class="flex items-center gap-2 mt-2">
+          <button onclick="updateQty(${item.id},-1)" class="w-7 h-7 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-sm transition" aria-label="Decrease quantity">−</button>
+          <span class="text-sm font-semibold w-6 text-center">${item.qty}</span>
+          <button onclick="updateQty(${item.id},+1)" class="w-7 h-7 rounded-lg bg-green-100 hover:bg-green-200 flex items-center justify-center text-green-700 font-bold text-sm transition" aria-label="Increase quantity">+</button>
+          <button onclick="removeFromCart(${item.id})" class="ml-auto text-red-400 hover:text-red-600 transition" aria-label="Remove ${item.name} from cart">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="text-sm font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">${formatINR(item.price * item.qty)}</p>
+    </div>
+  `).join('');
+
+  totalEl.textContent = formatINR(getCartTotal());
+  const deliveryNote = $('#cart-delivery-note');
+  if (deliveryNote) {
+    const delivery = getCartTotal() >= 1000 ? 'FREE delivery' : '₹49 delivery';
+    deliveryNote.textContent = `${delivery} · ₹12 handling at checkout`;
+  }
+}
+
+// ──────────────────────────────────────
+// 6. CART DRAWER OPEN/CLOSE
+// ──────────────────────────────────────
+function openCart() {
+  const overlay = $('#cart-overlay');
+  const drawer = $('#cart-drawer');
+  clearTimeout(cartCloseTimer);
+  overlay.classList.remove('hidden');
+  drawer.classList.remove('translate-x-full');
+  document.body.style.overflow = 'hidden';
+  renderCartDrawer();
+}
+
+function closeCart() {
+  const overlay = $('#cart-overlay');
+  const drawer = $('#cart-drawer');
+  if (!overlay || overlay.classList.contains('hidden')) return;
+  clearTimeout(cartCloseTimer);
+  drawer.classList.add('translate-x-full');
+  cartCloseTimer = setTimeout(() => {
+    if (drawer.classList.contains('translate-x-full')) {
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  }, 300);
+}
+
+// ──────────────────────────────────────
+// 7. FILTERING & SEARCH
+// ──────────────────────────────────────
+function updateCategoryButtons(activeCat) {
+  $$('.cat-btn').forEach(btn => {
+    const isActive = btn.dataset.cat === activeCat;
+    btn.classList.toggle('bg-green-600', isActive);
+    btn.classList.toggle('dark:bg-green-700', isActive);
+    btn.classList.toggle('text-white', isActive);
+    btn.classList.toggle('bg-white', !isActive);
+    btn.classList.toggle('dark:bg-gray-800', !isActive);
+    btn.classList.toggle('text-gray-700', !isActive);
+    btn.classList.toggle('dark:text-gray-200', !isActive);
+    btn.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function filterByCategory(cat) {
+  activeCategory = cat;
+  updateCategoryButtons(cat);
+  renderProducts();
+  // scroll to products
+  document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearFilters() {
+  activeCategory = "All";
+  searchQuery = "";
+  ['#search-input', '#mobile-search-input'].forEach(selector => {
+    const input = $(selector);
+    if (input) input.value = "";
+  });
+  updateCategoryButtons("All");
+  renderProducts();
+}
+
+function handleSearch(e) {
+  searchQuery = e.target.value.trim();
+  const otherInput = e.target.id === 'search-input' ? $('#mobile-search-input') : $('#search-input');
+  if (otherInput) otherInput.value = e.target.value;
+  renderProducts();
+}
+
+function submitProductSearch(event) {
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+  searchProductByQuery(event.currentTarget.value);
+}
+
+function searchProductFromButton(inputId) {
+  const input = document.getElementById(inputId);
+  if (input) searchProductByQuery(input.value);
+}
+
+function searchProductByQuery(rawQuery) {
+  const query = rawQuery.trim().toLowerCase();
+  if (!query) return;
+  const normalize = value => value.toLowerCase().replace(/&/g, ' ').replace(/\band\b/g, ' ').replace(/[^a-z0-9]/g, '');
+  const normalizedQuery = normalize(query);
+  const categoryAliases = { fruit: 'Fruits & Vegetables', fruits: 'Fruits & Vegetables', vegetable: 'Fruits & Vegetables', vegetables: 'Fruits & Vegetables', produce: 'Fruits & Vegetables' };
+  const categoryName = categoryAliases[normalizedQuery]
+    || categories.find(category => normalize(category.name).includes(normalizedQuery) || normalizedQuery.includes(normalize(category.name)))?.name;
+  if (categoryName) {
+    openCategoryPage(categoryName);
+    return;
+  }
+  const match = products.find(product => product.name.toLowerCase() === query)
+    || products.find(product => product.name.toLowerCase().startsWith(query))
+    || products.find(product => product.name.toLowerCase().includes(query));
+  if (match) openProductDetail(match.id);
+  else openSearchResultsPage(rawQuery);
+}
+
+// ──────────────────────────────────────
+// 8. MOBILE MENU
+// ──────────────────────────────────────
+function setMobileMenuOpen(isOpen) {
+  const menu = $('#mobile-menu');
+  if (!menu) return;
+  menu.classList.toggle('open', isOpen);
+  $('#mobile-search-input')?.setAttribute('aria-expanded', String(isOpen));
+}
+
+function toggleMobileMenu() {
+  const menu = $('#mobile-menu');
+  if (menu) setMobileMenuOpen(!menu.classList.contains('open'));
+}
+
+// ──────────────────────────────────────
+// 9. TOAST NOTIFICATIONS
+// ──────────────────────────────────────
+function showToast(message, icon = "✅") {
+  const container = $('#toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast flex items-center gap-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-xl px-5 py-3 mb-2 max-w-sm';
+  toast.innerHTML = `<span class="text-xl flex-shrink-0">${icon}</span><p class="text-sm font-medium text-gray-700 dark:text-gray-200">${message}</p>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('toast-exit');
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// ──────────────────────────────────────
+// 10. NEWSLETTER
+// ──────────────────────────────────────
+function handleNewsletter(e) {
+  e.preventDefault();
+  const input = $('#newsletter-email');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    showToast("Please enter a valid email address.", "⚠️");
+    return;
+  }
+  showToast("Thanks for subscribing! 🎉", "📬");
+  input.value = "";
+}
+
+// ──────────────────────────────────────
+// 11. COUNTDOWN TIMER (Deal of the Day)
+// ──────────────────────────────────────
+function startCountdown() {
+  // End time: midnight tonight (rolls over each day)
+  function getEndOfDay() {
+    const now = new Date();
+    const end = new Date(now);
+    end.setHours(23, 59, 59, 999);
+    return end;
+  }
+  function update() {
+    const diff = getEndOfDay() - new Date();
+    if (diff <= 0) return;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    const el = $('#countdown');
+    if (el) el.innerHTML = `
+      <div class="flex gap-2 sm:gap-3 justify-center">
+        <div class="bg-white/20 backdrop-blur rounded-lg px-3 py-2 min-w-[3.5rem] text-center"><span class="text-2xl sm:text-3xl font-bold">${pad(h)}</span><p class="text-[10px] uppercase tracking-wider mt-0.5 text-green-200">Hours</p></div>
+        <span class="text-2xl sm:text-3xl font-bold self-start mt-2">:</span>
+        <div class="bg-white/20 backdrop-blur rounded-lg px-3 py-2 min-w-[3.5rem] text-center"><span class="text-2xl sm:text-3xl font-bold">${pad(m)}</span><p class="text-[10px] uppercase tracking-wider mt-0.5 text-green-200">Minutes</p></div>
+        <span class="text-2xl sm:text-3xl font-bold self-start mt-2">:</span>
+        <div class="bg-white/20 backdrop-blur rounded-lg px-3 py-2 min-w-[3.5rem] text-center"><span class="text-2xl sm:text-3xl font-bold">${pad(s)}</span><p class="text-[10px] uppercase tracking-wider mt-0.5 text-green-200">Seconds</p></div>
+      </div>`;
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+// ──────────────────────────────────────
+// 12. BACK-TO-TOP BUTTON
+// ──────────────────────────────────────
+function initBackToTop() {
+  const btn = $('#back-to-top');
+  if (!btn) return;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('hidden', window.scrollY < 400);
+  }, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+// ──────────────────────────────────────
+// 13. INITIALISE
+// ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(getSavedTheme());
+  updateCategoryButtons(activeCategory);
+  renderCategoryTiles();
+  renderProducts();
+  renderTestimonials();
+  startCountdown();
+  updateCartUI();
+  initBackToTop();
+
+  // search input listeners
+  const searchInput = $('#search-input');
+  const mobileSearchInput = $('#mobile-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearch);
+    searchInput.addEventListener('keydown', submitProductSearch);
+  }
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', handleSearch);
+    mobileSearchInput.addEventListener('keydown', submitProductSearch);
+    mobileSearchInput.addEventListener('focus', () => setMobileMenuOpen(true));
+  }
+
+  document.addEventListener('click', (e) => {
+    const searchArea = $('#mobile-search-area');
+    const menu = $('#mobile-menu');
+    if (searchArea && menu?.classList.contains('open') && !searchArea.contains(e.target)) {
+      setMobileMenuOpen(false);
+    }
+  });
+
+  // Newsletter form
+  const nlForm = $('#newsletter-form');
+  if (nlForm) nlForm.addEventListener('submit', handleNewsletter);
+
+  const checkoutForm = $('#checkout-form');
+  if (checkoutForm) checkoutForm.addEventListener('submit', handleCheckoutSubmit);
+
+    // Screen flow is handled by the embedded single-file interface.
+
+  // Cart overlay click to close
+  const overlay = $('#cart-overlay');
+  if (overlay) overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeCart();
+  });
+
+  // Escape key closes cart / mobile menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCart();
+      const menu = $('#mobile-menu');
+      if (menu && menu.classList.contains('open')) toggleMobileMenu();
+    }
+  });
+});
+
+
+</script>
+<div id="onefile-profile-screen" class="onefile-screen onefile-profile-screen" aria-label="My profile">
+  <header class="profile-topbar"><a class="profile-brand" href="#" onclick="showOneFileScreen('shop');return false;" aria-label="FreshMart home">🛒 Fresh<span>Mart</span></a><button class="profile-back" type="button" onclick="showOneFileScreen('shop')">← Back to shop</button></header>
+  <main class="profile-main"><div class="profile-heading"><div class="profile-avatar" id="profile-avatar" aria-hidden="true">F</div><div><p class="profile-eyebrow">FRESHMART CUSTOMER</p><h1>My Profile</h1></div></div>
+    <section class="profile-card" aria-labelledby="personal-info-title"><h2 id="personal-info-title">Name</h2><p id="profile-name" class="profile-value">—</p></section>
+    <section class="profile-card" aria-labelledby="mobile-title"><h2 id="mobile-title">Mobile number</h2><p id="profile-phone" class="profile-value">—</p></section>
+    <section class="profile-card" aria-labelledby="orders-title"><div class="profile-orders-heading"><div><p class="profile-eyebrow">YOUR PURCHASES</p><h2 id="orders-title">Past Orders</h2></div><span class="sample-badge">PREVIEW</span></div><div id="onefile-past-orders" class="past-orders-list"></div><p class="profile-note">Sample order history for this front-end preview.</p></section>
+  </main>
+</div>
+<div id="onefile-product-screen" class="onefile-screen onefile-product-screen" aria-label="Product details">
+  <header class="profile-topbar"><a class="profile-brand" href="#" onclick="returnToShop();return false;" aria-label="FreshMart home">🛒 Fresh<span>Mart</span></a><div class="flex items-center gap-2"><button type="button" onclick="openCart()" class="rounded-full bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700">🛒 Cart</button><button class="profile-back" type="button" onclick="returnToShop()">← Back to products</button></div></header>
+  <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8"><div id="onefile-product-content"></div><section class="mt-12"><div class="mb-5"><p class="text-xs font-bold uppercase tracking-widest text-green-600">More to explore</p><h2 class="mt-1 text-2xl font-extrabold text-gray-900 dark:text-white">Related products</h2></div><div id="onefile-related-products" class="grid grid-cols-2 gap-4 sm:grid-cols-4"></div></section></main>
+</div>
+<div id="onefile-category-screen" class="onefile-screen onefile-category-screen" aria-label="Product category">
+  <header class="profile-topbar"><a class="profile-brand" href="#" onclick="returnToShop();return false;" aria-label="FreshMart home">🛒 Fresh<span>Mart</span></a><div class="flex items-center gap-2"><button type="button" onclick="openCart()" class="rounded-full bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700">🛒 Cart</button><button class="profile-back" type="button" onclick="returnToShop()">← Back to shop</button></div></header>
+  <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8"><p class="text-xs font-bold uppercase tracking-widest text-green-600">Shop by category</p><h1 id="onefile-category-title" class="mt-1 text-3xl font-extrabold text-gray-900 dark:text-white"></h1><p id="onefile-category-description" class="mt-2 text-gray-500 dark:text-gray-400"></p><div id="onefile-category-products" class="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"></div></main>
+</div>
+<div id="onefile-search-screen" class="onefile-screen onefile-category-screen" aria-label="Search results">
+  <header class="profile-topbar"><a class="profile-brand" href="#" onclick="returnToShop();return false;" aria-label="FreshMart home">🛒 Fresh<span>Mart</span></a><div class="flex items-center gap-2"><button type="button" onclick="openCart()" class="rounded-full bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700">🛒 Cart</button><button class="profile-back" type="button" onclick="returnToShop()">← Back to shop</button></div></header>
+  <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8"><p class="text-xs font-bold uppercase tracking-widest text-green-600">FreshMart search</p><h1 id="onefile-search-title" class="mt-1 text-3xl font-extrabold text-gray-900 dark:text-white"></h1><p id="onefile-search-note" class="mt-2 text-gray-500 dark:text-gray-400"></p><div id="onefile-search-products" class="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"></div></main>
+</div>
+<script>
+(() => {
+  window.showOneFileScreen = screen => {
+    document.querySelectorAll('.onefile-screen').forEach(element => element.classList.remove('is-active'));
+    document.body.classList.toggle('product-page-route', screen === 'product' || screen === 'category');
+    if (screen === 'profile') {
+      let profile = {};
+      try { profile = JSON.parse(localStorage.getItem('freshmart-account-profile') || 'null') || {}; } catch {}
+      window.renderOneFileProfile(profile);
+      document.querySelector('#onefile-profile-screen').classList.add('is-active');
+      return;
+    }
+    if (screen === 'product') {
+      window.renderOneFileProductDetail(window.oneFileSelectedProductId);
+      document.querySelector('#onefile-product-screen').classList.add('is-active');
+      return;
+    }
+    if (screen === 'category') {
+      window.renderOneFileCategoryPage(window.oneFileSelectedCategory);
+      document.querySelector('#onefile-category-screen').classList.add('is-active');
+      return;
+    }
+    if (screen === 'search') {
+      window.renderOneFileSearchPage(window.oneFileSearchQuery);
+      document.querySelector('#onefile-search-screen').classList.add('is-active');
+      return;
+    }
+    document.querySelector('#onefile-shop-screen').classList.add('is-active');
+  };
+
+  try {
+    if (localStorage.getItem('freshmart-theme') === 'dark') document.documentElement.classList.add('dark');
+  } catch {}
+
+  const query = new URLSearchParams(window.location.search);
+  const requestedSearch = query.get('search');
+  const requestedCategory = query.get('category');
+  const requestedProductId = Number(query.get('product'));
+  if (requestedSearch) {
+    window.oneFileSearchQuery = requestedSearch;
+    window.showOneFileScreen('search');
+  } else if (requestedCategory && categories.some(category => category.name === requestedCategory)) {
+    window.oneFileSelectedCategory = requestedCategory;
+    window.showOneFileScreen('category');
+  } else if (requestedProductId && products.some(product => product.id === requestedProductId)) {
+    window.oneFileSelectedProductId = requestedProductId;
+    window.showOneFileScreen('product');
+  } else {
+    window.showOneFileScreen('shop');
+  }
+})();
+</script>
+<script>
+(() => {
+  const demoOrders = [
+    { number: 'FM-240518', date: 'May 18, 2026', status: 'Delivered', items: 'Avocados, bananas, milk and more', total: '₹1,128' },
+    { number: 'FM-240502', date: 'May 2, 2026', status: 'Delivered', items: 'Strawberries, sourdough, eggs and tea', total: '₹986' },
+    { number: 'FM-240421', date: 'Apr 21, 2026', status: 'Delivered', items: 'Spinach, orange juice and granola', total: '₹754' }
+  ];
+  window.renderOneFileProfile = profile => {
+    const name = profile?.name || 'FreshMart shopper';
+    document.getElementById('profile-name').textContent = name;
+    document.getElementById('profile-phone').textContent = profile?.phone || 'Mobile number not added';
+    document.getElementById('profile-avatar').textContent = name.trim().charAt(0).toUpperCase() || 'F';
+    const list = document.getElementById('onefile-past-orders');
+    list.replaceChildren();
+    let placedOrders = [];
+    try { placedOrders = JSON.parse(localStorage.getItem('freshmart-orders') || '[]'); } catch {}
+    const savedOrders = placedOrders.map(order => ({
+      number: order.number,
+      date: order.date,
+      status: order.status,
+      items: order.items,
+      total: formatINR(order.total)
+    }));
+    [...savedOrders, ...demoOrders].forEach(order => {
+      const card = document.createElement('article');
+      card.className = 'past-order';
+      const detail = document.createElement('div');
+      const number = document.createElement('p'); number.className='order-number'; number.textContent=`${order.number} · ${order.date}`;
+      const status = document.createElement('p'); status.className='order-status'; status.textContent=order.status;
+      const items = document.createElement('p'); items.className='order-items'; items.textContent=order.items;
+      detail.append(number,status,items);
+      const total = document.createElement('strong'); total.className='order-total'; total.textContent=order.total;
+      card.append(detail,total); list.append(card);
+    });
+  };
+})();
+</script>
 </body>
 </html>
 
